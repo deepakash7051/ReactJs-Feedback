@@ -1,26 +1,36 @@
+import {v4 as uuidv4} from 'uuid'
+import { useState } from "react";
+import Header from "./Components/Header";
+import FeedbackList from "./Components/FeedbackList";
+import FeedbackData from "./data/Feedbackdata";
+import FeedbackStats from "./Components/FeedbackStats";
+import FeedbackForm from "./Components/FeedbackForm";
+
 function App() {
-    const title = "Blog Title";
-    const body = "This is blog title";
-    const comments = [
-        {id:1, text:'Comment one'},
-        {id:2, text:'Comment two'},
-        {id:3, text:'Comment three'},
-        {id:4, text:'Comment four'},
-    ]
-    return (
-        <div className="container">
-            <h1>{title}</h1>
-            <p>{body}</p>
-            <div className='comments'>
-                <h3>Comments ({comments.length})</h3>
-                <ul>
-                    {comments.map((comment, index)=> (
-                        <li key={index}>{comment.text}</li>
-                    ))}
-                </ul>
-            </div>
-        </div>
-    )
+  const [feedback, setFeedback] = useState(FeedbackData);
+
+  const addFeedback = (newFeedback) => {
+    newFeedback.id = uuidv4()
+    setFeedback([newFeedback, ...feedback])
+    console.log(newFeedback);
+  };
+
+  const deleteFeedback = (id) => {
+    if (window.confirm("Are you sure want to delete?")) {
+      setFeedback(feedback.filter((item) => item.id !== id));
+    }
+  };
+
+  return (
+    <div>
+      <Header />
+      <div className="container">
+        <FeedbackForm handleAdd={addFeedback} />
+        <FeedbackStats feedback={feedback} />
+        <FeedbackList feedback={feedback} handleDelete={deleteFeedback} />
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
